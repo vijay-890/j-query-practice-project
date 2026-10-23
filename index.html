@@ -1,114 +1,102 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>jquery-practice</title>
-    <script src="jquery-4.0.0.min.js"></script>
-
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="A small interactive playground for practicing jQuery effects." />
+    <title>jQuery Practice Playground</title>
+    <script src="https://code.jquery.com/jquery-4.0.0.min.js"></script>
     <style>
-        #panel,#flip{
-            padding: 5px;
-            text-align: center;
-            background-color: #c3c3c3;
-        }
-
-        #panel{
-            padding: 50px;
-            display: none;
-        }
-
-
+      :root { color-scheme: light; font-family: Inter, ui-sans-serif, system-ui, sans-serif; color: #18253e; background: #f5f7fb; }
+      * { box-sizing: border-box; }
+      body { margin: 0; min-height: 100vh; }
+      main { width: min(960px, calc(100% - 32px)); margin: 0 auto; padding: 52px 0; }
+      .eyebrow { color: #5146e5; font-size: .78rem; font-weight: 800; letter-spacing: .13em; text-transform: uppercase; }
+      h1 { margin: 8px 0; font-size: clamp(2rem, 5vw, 3.4rem); letter-spacing: -.04em; }
+      .intro { margin: 0; color: #65728a; line-height: 1.7; }
+      .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; margin-top: 30px; }
+      .card { min-height: 225px; padding: 22px; border: 1px solid #e5e9f2; border-radius: 18px; background: white; box-shadow: 0 12px 34px #2532580a; }
+      h2 { margin: 0 0 7px; font-size: 1.12rem; }
+      .card p { color: #69758a; line-height: 1.55; }
+      .controls { display: flex; flex-wrap: wrap; gap: 9px; margin: 16px 0; }
+      button { border: 0; border-radius: 10px; padding: 10px 14px; color: white; background: #5146e5; font: inherit; font-weight: 700; cursor: pointer; }
+      button:hover { background: #3c32c8; }
+      button:focus-visible { outline: 3px solid #a9a3ff; outline-offset: 3px; }
+      .demo-text { margin: 12px 0 0; color: #17243d; }
+      .tiles { display: flex; gap: 10px; align-items: center; min-height: 54px; }
+      .tile { width: 48px; height: 48px; border-radius: 12px; background: linear-gradient(145deg, #f6a55e, #e64f9c); }
+      #tile-two, #toggle-tile-two { background: linear-gradient(145deg, #58d6c4, #4179ed); }
+      #tile-three, #toggle-tile-three { background: linear-gradient(145deg, #d7b5ff, #7855df); }
+      #toggle-tiles { display: none; }
+      #slide-panel { display: none; padding: 16px; border-radius: 12px; color: #423394; background: #eeeaff; }
+      @media (max-width: 640px) { main { padding: 34px 0; } .grid { grid-template-columns: 1fr; } }
     </style>
-</head>
-<body>
-
-<button id="hidebtn">hide</button>
-<button id="showbtn">show</button>
-<p id="text">hello world</p>
-
-<script>
-    $(document).ready(function(){
-        $("#hidebtn").click(function(){
-            $("#text").hide();
+  </head>
+  <body>
+    <main>
+      <span class="eyebrow">Small interactive demos</span>
+      <h1>jQuery Practice Playground</h1>
+      <p class="intro">Try the buttons to practice selectors, click handlers, visibility, fades, toggles, and slide effects.</p>
+      <div class="grid">
+        <section class="card" aria-labelledby="visibility-title">
+          <h2 id="visibility-title">Show and hide</h2>
+          <p>Use jQuery selectors to show or hide the message.</p>
+          <div class="controls">
+            <button id="hide-button" type="button">Hide message</button>
+            <button id="show-button" type="button">Show message</button>
+          </div>
+          <p id="visibility-message" class="demo-text">Hello! jQuery is working.</p>
+        </section>
+        <section class="card" aria-labelledby="fade-title">
+          <h2 id="fade-title">Fade effects</h2>
+          <p>Fade all three tiles in and out together.</p>
+          <div class="controls">
+            <button id="fade-in-button" type="button">Fade in</button>
+            <button id="fade-out-button" type="button">Fade out</button>
+          </div>
+          <div class="tiles" id="fade-tiles" aria-label="Three colored tiles">
+            <div class="tile" id="tile-one"></div>
+            <div class="tile" id="tile-two"></div>
+            <div class="tile" id="tile-three"></div>
+          </div>
+        </section>
+        <section class="card" aria-labelledby="toggle-title">
+          <h2 id="toggle-title">Toggle effect</h2>
+          <p>Show or hide the color tiles with one button.</p>
+          <div class="controls">
+            <button id="toggle-button" type="button" aria-controls="toggle-tiles" aria-expanded="false">Toggle tiles</button>
+          </div>
+          <div class="tiles" id="toggle-tiles">
+            <div class="tile"></div><div class="tile" id="toggle-tile-two"></div><div class="tile" id="toggle-tile-three"></div>
+          </div>
+        </section>
+        <section class="card" aria-labelledby="slide-title">
+          <h2 id="slide-title">Slide panel</h2>
+          <p>Open or close a panel with a slide animation.</p>
+          <div class="controls">
+            <button id="slide-button" type="button" aria-controls="slide-panel" aria-expanded="false">Open panel</button>
+          </div>
+          <div id="slide-panel">The panel opened with jQuery's slideToggle effect.</div>
+        </section>
+      </div>
+    </main>
+    <script>
+      $(function () {
+        $("#hide-button").on("click", function () { $("#visibility-message").hide(); });
+        $("#show-button").on("click", function () { $("#visibility-message").show(); });
+        $("#fade-in-button").on("click", function () { $("#fade-tiles .tile").fadeIn(250); });
+        $("#fade-out-button").on("click", function () { $("#fade-tiles .tile").fadeOut(250); });
+        $("#toggle-button").on("click", function () {
+          const expanded = $(this).attr("aria-expanded") === "true";
+          $("#toggle-tiles").toggle(250);
+          $(this).attr("aria-expanded", String(!expanded));
         });
-        $("#showbtn").click(function(){
-            $("#text").show();
+        $("#slide-button").on("click", function () {
+          const expanded = $(this).attr("aria-expanded") === "true";
+          $("#slide-panel").slideToggle(250);
+          $(this).attr("aria-expanded", String(!expanded)).text(expanded ? "Open panel" : "Close panel");
         });
-    });
-</script>
-
-<br>
-
-<!-- fade in fade out -->
-
-<div id="div1" style="width: 80px; height: 80px; background-color: yellow; display: none;"></div>
-<div id="div2" style="width: 80px; height: 80px; background-color: rgb(253, 78, 2); display: none;"></div>
-<div id="div3" style="width: 80px; height: 80px; background-color: rgb(197, 6, 255); display: none; "></div>
-
-<button id="fadein">fadein</button> <br><br>
-
-<button id="fadeoutbtn">fade out</button>
-
-        <div id="div1" style="width: 80px; height: 80px; display: none; background-color: black;"></div>
-        <div id="div2" style="width: 80px; height: 80px; display: none; background-color: rgb(55, 233, 10);"></div>
-        <div id="div3" style="width: 80px; height: 80px; display: none; background-color: rgb(132, 0, 255);"></div>
-
-
-
-<script>
-
-    $(document).ready(function(){
-        $("#fadein").click(function(){
-            $("#div1").fadeIn()
-            $("#div2").fadeIn("slow")
-            $("#div3").fadeIn(4000)
-
-            $("#fadeoutbtn").click(function(){
-                    $("#div1").fadeOut()
-                    $("#div2").fadeOut("slow")
-                    $("#div3").fadeOut(4000)
-                })
-                })
-
-          })
-
-</script>
-<br><br><br>
-
-
-<!-- in out toggle -->
-
-<div id="toggle1" style="background-color: pink; width: 80px; height: 80px; display: none;"></div>
-<div id="toggle2" style="background-color: rgb(118, 27, 42); width: 80px; height: 80px; display: none;"></div>
-<div id="toggle3" style="background-color: rgb(234, 11, 137); width: 80px; height: 80px; display: none;"></div>
-
-<button id="togglebtn">toggle</button>
-
-<script>
-    $(document).ready(function(){
-        $("#togglebtn").dblclick(function(){
-            $("#toggle1").toggle()
-            $("#toggle2").toggle("slow")
-            $("#toggle3").toggle(4000)
-        })
-    })
-</script>
-<br><br>
-
-<!-- slideup -->
- <div id="flip">click to slide down panel</div>
- <div id="panel">Hello World!</div>
-
- <script>
-    $(document).ready(function(){
-        $("#flip").click(function(){
-            $("#panel").slideDown("slow")
-        })
-    })
- </script>
-
-
-
-</body>
+      });
+    </script>
+  </body>
 </html>
